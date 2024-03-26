@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import useAuth from '../../hooks/useAuth'; // Importez le hook useAuth
 import '../globals.css';
-import Head from '../../components/head';
 import Navbar from "../../components/Navbar";
 import { useRouter } from 'next/navigation';
 
@@ -12,6 +11,18 @@ const Home = () => {
   const [reservationId, setReservationId] = useState(null);
   const router = useRouter();
 
+  // Fonction pour formater la date
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  };
+
+  // Fonction pour formater l'heure
+  const formatTime = (timeString) => {
+    return timeString.slice(0, 5); // Retourne les 5 premiers caractères (hh:mm)
+  };
+
+  //afficher toutes les réservations
   const getReservation = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -43,6 +54,7 @@ const Home = () => {
     }
   };
 
+  //Bouton supprimer
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -82,6 +94,7 @@ const Home = () => {
     window.location.reload();
   };
 
+  //Bouton modifier
   const handleEdit = (id) => {
     router.push(`/edit?id=${id}`); // Assurez-vous que l'ID est inclus dans l'URL
   };
@@ -95,23 +108,51 @@ const Home = () => {
 
   return isAuthenticated ? (
     <>
-      <Navbar />
-      <h1>Gérer les réservations</h1>
-      <button onClick={getReservation}>Charger</button>
-      <Head />
-      {reservation.map((item, index) => (
-        <div className="resa-container" key={index}>
-          <h3>{item.id}</h3>
-          <h4>{item.prenom}</h4>
-          <h4>{item.nom}</h4>
-          <h4>{item.mail}</h4>
-          <h4>{item.dateVisite}</h4>
-          <h4>{item.heureVisite}</h4>
-          <h4>{item.NbPersonne}</h4>
-          <button onClick={() => handleDelete(item.id)}>Supprimer</button>
-          <button onClick={() => handleEdit(item.id)}>Modifier</button>
-        </div>
-      ))}
+      <section className="homepage-container">
+        <Navbar />
+        <img className="bg" src="/img/whitepattern.png"></img>
+        <section className="home-page">
+          <div className="home-title">
+            <h1>Réservations</h1>
+            <p>Mieux visualiser pour mieux gérer...</p>
+          </div>
+          <button className="reload-btn" onClick={getReservation}>
+            <img src="./img/load.svg"></img>Charger</button>
+          <table>
+            <thead>
+              <tr>
+                <th className="id-header">ID</th>
+                <th className="prenom-header">Prénom</th>
+                <th className="nom-header">Nom</th>
+                <th className="email-header">Email</th>
+                <th className="date-visite-header">Date de visite</th>
+                <th className="heure-visite-header">Heure de visite</th>
+                <th className="nb-personnes-header">Nombre de personnes</th>
+                <th className="actions-header">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reservation.map((item, index) => (
+                <tr key={index}>
+                  <td className="id-header">{item.id}</td>
+                  <td className="prenom-header">{item.prenom}</td>
+                  <td className="nom-header">{item.nom}</td>
+                  <td className="email-header">{item.mail}</td>
+                  <td className="date-visite-header">{formatDate(item.dateVisite)}</td>
+                  <td className="heure-visite-header">{formatTime(item.heureVisite)}</td>
+                  <td className="nb-personnes-header">{item.NbPersonne}</td>
+                  <td className="actions-header">
+
+                    <button onClick={() => handleEdit(item.id)}><img src="./img/edit.svg"></img></button>
+                    <button onClick={() => handleDelete(item.id)}><img src="./img/trash.svg"></img></button>
+
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section >
+      </section>
     </>
   ) : null;
 };

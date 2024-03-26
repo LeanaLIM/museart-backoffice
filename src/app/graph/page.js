@@ -1,14 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Chart, registerables } from "chart.js";
 import useAuth from "../../hooks/useAuth";
 import Navbar from "../../components/Navbar";
-Chart.register(...registerables);
+import GraphComponent from "../../components/Graph";
+import TotalCounter from "../../components/TotalCounter";
+import '../globals.css';
 
 const GraphPage = () => {
-  const isAuthenticated = useAuth(); // Utilisation du hook useAuth pour vérifier l'authentification
+
+  const isAuthenticated = useAuth();
   const [monthlyReservationCounts, setMonthlyReservationCounts] = useState([]);
+  const [reservationData, setReservationData] = useState([]); // State pour stocker les données de réservation
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +36,8 @@ const GraphPage = () => {
 
         const data = await response.json();
         if (Array.isArray(data)) {
-          // Regrouper les réservations par mois
+          setReservationData(data); // Stocker les données de réservation dans le state
+
           const monthlyCounts = new Array(12).fill(0);
           data.forEach((item) => {
             const month = new Date(item.dateVisite).getMonth();
@@ -49,66 +53,33 @@ const GraphPage = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    // Créer le graphique linéaire une fois que les données sont récupérées
-    if (monthlyReservationCounts.length > 0) {
-      const ctx = document.getElementById("reservationChart");
-      const existingChart = Chart.getChart(ctx); // Récupérer le graphique existant
-      if (existingChart) {
-        existingChart.destroy(); // Détruire le graphique existant s'il y en a un
-      }
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [
-            "Jan",
-            "Fev",
-            "Mar",
-            "Avr",
-            "Mai",
-            "Juin",
-            "Juil",
-            "Août",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
-          datasets: [
-            {
-              label: "Nombre de réservations",
-              data: monthlyReservationCounts,
-              fill: false,
-              borderColor: "rgb(75, 192, 192)",
-              tension: 0.1,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 20, // Définir la valeur maximale de l'axe y à 40
-            },
-          },
-        },
-      });
-    }
-  }, [monthlyReservationCounts]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      ("youpi");
-    }
-  }, [isAuthenticated]);
+  // Calculer le total des valeurs de NbPersonne
+  const totalPersons = reservationData.reduce((total, reservation) => {
+    return total + parseInt(reservation.NbPersonne);
+  }, 0);
 
   return isAuthenticated ? (
     <>
-      <Navbar />
-      <div>
-        <h1>Graphique des réservations par mois</h1>
-        <canvas id="reservationChart" width="400" height="200"></canvas>
-      </div>
+      <section className="graphpage-container">
+        <Navbar />
+        <img className="bg" src="/img/whitepattern.png"></img>
+        <section className="graph-page">
+          <div className="titleGraph">
+            <h1>Graphiques</h1>
+            <p>Ayons une vision plus précise...</p>
+          </div>
+          <div>
+            <div className="graphique-page">
+              <div className="linear-graph">
+                <GraphComponent monthlyReservationCounts={monthlyReservationCounts} />
+              </div>
+              <div className="total-counter">
+                <TotalCounter reservationData={reservationData} />
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
     </>
   ) : null;
 };

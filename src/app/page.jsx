@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import "../app/globals.css";
 
 const Login = () => {
   const router = useRouter();
@@ -38,7 +39,7 @@ const Login = () => {
         setTimeout(() => {
           setError("");
         }, 3000);
-        return; //coucou driss le plus beau mdrrr tg
+        return;
       }
       localStorage.setItem("token", data);
       router.push("/home");
@@ -50,30 +51,42 @@ const Login = () => {
 
   return (
     <>
-      <h1>Login</h1>
+      <section className="login-container">
+        <img className="bg" src="/img/woman3bg.png"></img>
+        
+        <form onSubmit={handleSubmit}>
+          <h1>Connexion</h1>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
-        <input
-          type="text"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required // Make the input required
-        />
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required // Make the input required
-        />
-        <input type="submit" value="Submit" />
-        {error && <p>{error}</p>}
-      </form>
+          <div className="form">
+            <div className="field">
+              <label htmlFor="email">Login</label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required // Make the input required
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="password">Mot de passe</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required // Make the input required
+              />
+            </div>
+          </div>
+
+          <input type="submit" value="Se connecter" className="submit-btn" />
+
+          {error && <p className="error">{error}</p>}
+        </form>
+      </section>
     </>
   );
 };

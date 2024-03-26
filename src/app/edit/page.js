@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "../../components/Navbar";
+import '../globals.css';
 
 
 const Edit = () => {
@@ -17,6 +18,11 @@ const Edit = () => {
 
   const router = useRouter();
   const id = useSearchParams().get('id');
+
+  const isWeekend = (date) => {
+    const day = new Date(date).getDay();
+    return day === 0 || day === 6; // 0 pour dimanche, 6 pour samedi
+  };
 
   useEffect(() => {
     // Fetch reservation data only if id is available
@@ -39,16 +45,46 @@ const Edit = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    if (!isWeekend(selectedDate)) {
+      setFormData({ ...formData, dateVisite: selectedDate });
+    } else {
+      // Réinitialiser la valeur de date si c'est un week-end
+      alert("Les réservations ne sont pas autorisées les weekends.");
+    }
+  };
+
+  // Fonction pour générer les options d'heure entre 10h et 18h
+  const generateHeureOptions = () => {
+    const options = [];
+    for (let heure = 10; heure <= 18; heure++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const heureFormattee = `${heure < 10 ? '0' + heure : heure}:${minute < 10 ? '0' + minute : minute}`;
+        options.push(<option key={heureFormattee} value={heureFormattee}>{heureFormattee}</option>);
+      }
+    }
+    return options;
+  };
+
+  // Fonction pour générer les options du nombre de personnes de 1 à 10
+  const generateNbPersonneOptions = () => {
+    const options = [];
+    for (let i = 1; i <= 10; i++) {
+      options.push(<option key={i} value={i}>{i}</option>);
+    }
+    return options;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { nom, prenom, mail, dateVisite, heureVisite, NbPersonne } = formData;
     const token = localStorage.getItem("token");
+
 
     try {
       const response = await fetch("http://localhost:8081/api/api_controller.php", {
@@ -84,30 +120,52 @@ const Edit = () => {
   return (
     <>
       <Navbar />
-      <div>
-        <h1>Modifier la réservation</h1>
+      <img className="bg" src="/img/whitepattern.png"></img>
+      <section className="edit-container">
         <form onSubmit={handleSubmit}>
-          <label htmlFor="nom">Nom :</label>
-          <input type="text" id="nom" name="nom" value={formData.nom} onChange={handleChange} required /><br />
 
-          <label htmlFor="prenom">Prénom :</label>
-          <input type="text" id="prenom" name="prenom" value={formData.prenom} onChange={handleChange} required /><br />
+          <h1>Modifier la réservation</h1>
 
-          <label htmlFor="mail">Mail :</label>
-          <input type="email" id="email" name="email" value={formData.mail} onChange={handleChange} required /><br />
+          <div className="form-container">
+            <div className="form">
+              <div className="field">
+                <label htmlFor="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" value={formData.nom} onChange={handleChange} required /><br />
+              </div>
+              <div className="field">
+                <label htmlFor="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" value={formData.prenom} onChange={handleChange} required /><br />
+              </div>
+              <div className="field">
+                <label htmlFor="mail">Mail :</label>
+                <input type="email" id="mail" name="mail" value={formData.mail} onChange={handleChange} required /><br />
+              </div>
+            </div>
+            <div className="form">
+              <div className="field">
+                <label htmlFor="dateVisite">Date de visite :</label>
+                <input type="date" id="dateVisite" name="dateVisite" value={formData.dateVisite} onChange={handleDateChange} required /><br />
+              </div>
+              <div className="field">
+                <label htmlFor="heureVisite">Heure de visite :</label>
+                <select id="heureVisite" name="heureVisite" value={formData.heureVisite} onChange={handleChange} required>
+                  <option value="">Choisissez une heure de réservation</option>
+                  {generateHeureOptions()}
+                </select><br />
+              </div>
+              <div className="field">
+                <label htmlFor="NbPersonne">Nombre de personnes :</label>
+                <select id="NbPersonne" name="NbPersonne" value={formData.NbPersonne} onChange={handleChange} required>
+                  <option value="">Choisissez le nombre de personnes</option>
+                  {generateNbPersonneOptions()}
+                </select><br />
+              </div>
+            </div>
+          </div>
 
-          <label htmlFor="dateVisite">Date de visite :</label>
-          <input type="date" id="dateVisite" name="dateVisite" value={formData.dateVisite} onChange={handleChange} required /><br />
-
-          <label htmlFor="heureVisite">Heure de visite :</label>
-          <input type="time" id="heureVisite" name="heureVisite" value={formData.heureVisite} onChange={handleChange} required /><br />
-
-          <label htmlFor="NbPersonne">Nombre de personnes :</label>
-          <input type="number" id="NbPersonne" name="NbPersonne" value={formData.NbPersonne} onChange={handleChange} required /><br />
-
-          <input type="submit" value="Enregistrer" />
+          <input type="submit" value="Enregistrer" className="submit-btn" />
         </form>
-      </div>
+      </section>
     </>
   );
 };
