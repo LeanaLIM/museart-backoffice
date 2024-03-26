@@ -1,29 +1,31 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "../../components/Navbar";
+
 
 const Edit = () => {
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
-    emailupdate: "",
+    mail: "",
     dateVisite: "",
-    HeureVisite: "",
+    heureVisite: "",
     NbPersonne: ""
   });
+
   const router = useRouter();
-  const { id } = router.query || {};
+  const id = useSearchParams().get('id');
 
   useEffect(() => {
     // Fetch reservation data only if id is available
     if (id) {
-      fetchReservation();
+      fetchReservation(id);
     }
   }, [id]);
 
-  const fetchReservation = async () => {
+  const fetchReservation = async (id) => {
     try {
       const response = await fetch(`http://localhost:8081/api/api_controller.php?id=${id}`);
       if (!response.ok) {
@@ -44,40 +46,40 @@ const Edit = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const { nom, prenom, mail, dateVisite, HeureVisite, NbPersonne } = formData;
-  const token = localStorage.getItem("token");
+    e.preventDefault();
+    const { nom, prenom, mail, dateVisite, heureVisite, NbPersonne } = formData;
+    const token = localStorage.getItem("token");
 
-  try {
-    const response = await fetch("http://localhost:8081/api/api_controller.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        action: 'update',
-        token: token,
-        id: id,
-        nom: nom,
-        prenom: prenom,
-        emailupdate: mail, // Corrected from emailupdate to mail
-        dateVisite: dateVisite,
-        heurevisite: HeureVisite, // Corrected from heurevisite to HeureVisite
-        NbPersonne: NbPersonne
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:8081/api/api_controller.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          action: 'update',
+          token: token,
+          id: id, // Utiliser l'id depuis router.query
+          nom: nom,
+          prenom: prenom,
+          emailupdate: mail,
+          dateVisite: dateVisite,
+          heureVisite: heureVisite,
+          NbPersonne: NbPersonne
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const responseData = await response.json();
+      console.log(responseData.message); // Assuming API returns a message
+      router.push("/home");
+    } catch (error) {
+      console.error("Error:", error);
     }
-
-    const responseData = await response.json();
-    console.log(responseData.message); // Assuming API returns a message
-    router.push("/home");
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
+  };
 
   return (
     <>
@@ -92,13 +94,13 @@ const Edit = () => {
           <input type="text" id="prenom" name="prenom" value={formData.prenom} onChange={handleChange} required /><br />
 
           <label htmlFor="mail">Mail :</label>
-          <input type="email" id="mail" name="mail" value={formData.mail} onChange={handleChange} required /><br />
+          <input type="email" id="email" name="email" value={formData.mail} onChange={handleChange} required /><br />
 
           <label htmlFor="dateVisite">Date de visite :</label>
           <input type="date" id="dateVisite" name="dateVisite" value={formData.dateVisite} onChange={handleChange} required /><br />
 
-          <label htmlFor="HeureVisite">Heure de visite :</label>
-          <input type="time" id="HeureVisite" name="HeureVisite" value={formData.HeureVisite} onChange={handleChange} required /><br />
+          <label htmlFor="heureVisite">Heure de visite :</label>
+          <input type="time" id="heureVisite" name="heureVisite" value={formData.heureVisite} onChange={handleChange} required /><br />
 
           <label htmlFor="NbPersonne">Nombre de personnes :</label>
           <input type="number" id="NbPersonne" name="NbPersonne" value={formData.NbPersonne} onChange={handleChange} required /><br />

@@ -106,7 +106,7 @@ const Home = () => {
           <h4>{item.nom}</h4>
           <h4>{item.mail}</h4>
           <h4>{item.dateVisite}</h4>
-          <h4>{item.HeureVisite}</h4>
+          <h4>{item.heureVisite}</h4>
           <h4>{item.NbPersonne}</h4>
           <button onClick={() => handleDelete(item.id)}>Supprimer</button>
           <button onClick={() => handleEdit(item.id)}>Modifier</button>

@@ -88,7 +88,7 @@ const GraphPage = () => {
           scales: {
             y: {
               beginAtZero: true,
-              max: 40, // Définir la valeur maximale de l'axe y à 40
+              max: 20, // Définir la valeur maximale de l'axe y à 40
             },
           },
         },
