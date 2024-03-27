@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import useAuth from "../../hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import '../globals.css';
 
 
 const Edit = () => {
+  const isAuthenticated = useAuth(); // Utilisation du hook useAuth pour vérifier l'authentification
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -117,7 +119,7 @@ const Edit = () => {
     }
   };
 
-  return (
+  return isAuthenticated ? (
     <>
       <Navbar />
       <img className="bg" src="/img/whitepattern.png"></img>
@@ -167,7 +169,7 @@ const Edit = () => {
         </form>
       </section>
     </>
-  );
+  ) : null;
 };
 
 export default Edit;
