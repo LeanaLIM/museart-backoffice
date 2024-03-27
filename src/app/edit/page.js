@@ -119,6 +119,18 @@ const Edit = () => {
     }
   };
 
+  if (!id) {
+    return isAuthenticated ? (
+      <>
+        <Navbar />
+        <img className="bg" src="/img/whitepattern.png"></img>
+        <section className="edit-container">
+          <h1>404 ERROR : ID NOT FOUND</h1>
+        </section>
+      </>
+    ) : null;
+  }
+
   return isAuthenticated ? (
     <>
       <Navbar />
@@ -173,3 +185,4 @@ const Edit = () => {
 };
 
 export default Edit;
+

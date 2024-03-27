@@ -1,5 +1,6 @@
 {
   "name": "museart-backoffice",
+  "homepage": "https://museart-backoffice.leanalim.com",
   "version": "0.1.0",
   "private": true,
   "scripts": {
