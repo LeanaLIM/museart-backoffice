@@ -1,14 +1,22 @@
 'use client';
-
 import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from "react";
 import '../globals.css';
 
-
 const Edit = () => {
-  const isAuthenticated = useAuth(); // Utilisation du hook useAuth pour vérifier l'authentification
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EditForm />
+    </Suspense>
+  );
+};
+
+const EditForm = () => {
+  const isAuthenticated = useAuth();
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -19,15 +27,17 @@ const Edit = () => {
   });
 
   const router = useRouter();
-  const id = useSearchParams().get('id');
+
+  // Move the useSearchParams() call inside the component
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id') || null;
 
   const isWeekend = (date) => {
     const day = new Date(date).getDay();
-    return day === 0 || day === 6; // 0 pour dimanche, 6 pour samedi
+    return day === 0 || day === 6;
   };
 
   useEffect(() => {
-    // Fetch reservation data only if id is available
     if (id) {
       fetchReservation(id);
     }
@@ -56,12 +66,10 @@ const Edit = () => {
     if (!isWeekend(selectedDate)) {
       setFormData({ ...formData, dateVisite: selectedDate });
     } else {
-      // Réinitialiser la valeur de date si c'est un week-end
       alert("Les réservations ne sont pas autorisées les weekends.");
     }
   };
 
-  // Fonction pour générer les options d'heure entre 10h et 18h
   const generateHeureOptions = () => {
     const options = [];
     for (let heure = 10; heure <= 18; heure++) {
@@ -73,7 +81,6 @@ const Edit = () => {
     return options;
   };
 
-  // Fonction pour générer les options du nombre de personnes de 1 à 10
   const generateNbPersonneOptions = () => {
     const options = [];
     for (let i = 1; i <= 10; i++) {
@@ -87,7 +94,6 @@ const Edit = () => {
     const { nom, prenom, mail, dateVisite, heureVisite, NbPersonne } = formData;
     const token = localStorage.getItem("token");
 
-
     try {
       const response = await fetch("http://localhost:8081/api/api_controller.php", {
         method: "POST",
@@ -97,7 +103,7 @@ const Edit = () => {
         body: new URLSearchParams({
           action: 'update',
           token: token,
-          id: id, // Utiliser l'id depuis router.query
+          id: id,
           nom: nom,
           prenom: prenom,
           emailupdate: mail,
@@ -112,7 +118,7 @@ const Edit = () => {
       }
 
       const responseData = await response.json();
-      console.log(responseData.message); // Assuming API returns a message
+      console.log(responseData.message);
       router.push("/home");
     } catch (error) {
       console.error("Error:", error);
@@ -137,9 +143,7 @@ const Edit = () => {
       <img className="bg" src="/img/whitepattern.png"></img>
       <section className="edit-container">
         <form onSubmit={handleSubmit}>
-
           <h1>Modifier la réservation</h1>
-
           <div className="form-container">
             <div className="form">
               <div className="field">
@@ -176,7 +180,6 @@ const Edit = () => {
               </div>
             </div>
           </div>
-
           <input type="submit" value="Enregistrer" className="submit-btn" />
         </form>
       </section>
@@ -185,4 +188,3 @@ const Edit = () => {
 };
 
 export default Edit;
-
