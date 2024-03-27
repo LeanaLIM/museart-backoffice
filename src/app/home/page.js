@@ -26,7 +26,7 @@ const Home = () => {
   const getReservation = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://api.andyrbr.fr/api_controller.php", {
+      const response = await fetch("https://api.andyrbr.fr/api_controller.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -60,7 +60,7 @@ const Home = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://api.andyrbr.fr/api_controller.php",
+        "https://api.andyrbr.fr/api_controller.php",
         {
           method: "POST",
           headers: {
