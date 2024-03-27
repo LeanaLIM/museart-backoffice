@@ -7,7 +7,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <head>
-        <meta charset="utf-8" />
+        <meta charSet="utf-8" />git 
         <link rel="icon" href="../../public/img/harp.ico" />
       </head>
       <body>
