@@ -18,7 +18,7 @@ const useAuth = () => {
             }
 
             try {
-                const response = await fetch('http://localhost:8081/api/api_controller.php', {
+                const response = await fetch('http://api.andyrbr.fr/api_controller.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'

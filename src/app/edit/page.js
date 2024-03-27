@@ -45,7 +45,7 @@ const EditForm = () => {
 
   const fetchReservation = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/api_controller.php?id=${id}`);
+      const response = await fetch(`http://api.andyrbr.fr/api_controller.php?id=${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -95,7 +95,7 @@ const EditForm = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:8081/api/api_controller.php", {
+      const response = await fetch("http://api.andyrbr.fr/api_controller.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

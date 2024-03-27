@@ -17,7 +17,7 @@ const GraphPage = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8081/api/api_controller.php",
+          "http://api.andyrbr.fr/api_controller.php",
           {
             method: "POST",
             headers: {

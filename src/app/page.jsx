@@ -13,19 +13,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "http://localhost:8081/api/api_controller.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            email: email,
-            passwd: password,
-          }),
-        }
-      );
+      const response = await fetch("http://api.andyrbr.fr/api_controller.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          email: email,
+          passwd: password,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
