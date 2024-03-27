@@ -118,7 +118,6 @@ const EditForm = () => {
       }
 
       const responseData = await response.json();
-      console.log(responseData.message);
       router.push("/home");
     } catch (error) {
       console.error("Error:", error);

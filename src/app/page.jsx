@@ -32,7 +32,6 @@ const Login = () => {
       }
 
       const data = await response.text();
-      console.log(data);
       //si data commence par "error: " alors c'est une erreur
       if (data.startsWith("error: ")) {
         setError(data.replace("error: ", ""));
