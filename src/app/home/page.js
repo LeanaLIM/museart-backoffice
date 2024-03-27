@@ -143,8 +143,8 @@ const Home = () => {
                   <td className="nb-personnes-header">{item.NbPersonne}</td>
                   <td className="actions-header">
 
-                    <button onClick={() => handleEdit(item.id)}><img src="./img/edit.svg"></img></button>
-                    <button onClick={() => handleDelete(item.id)}><img src="./img/trash.svg"></img></button>
+                    <button onClick={() => handleEdit(item.id)}><img src="./img/edit.svg" alt="edit"></img></button>
+                    <button onClick={() => handleDelete(item.id)}><img src="./img/trash.svg" alt="delete"></img></button>
 
                   </td>
                 </tr>
